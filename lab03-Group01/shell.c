@@ -1,47 +1,84 @@
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
 #include "parser.h"
 
 #define BUFLEN 1024
+#define MAX_ARGS 128
 
-//To Do: This base file has been provided to help you start the lab, you'll need to heavily modify it to implement all of the features
+extern char **environ;
 
-int main() {
-    char buffer[1024];
-    char* parsedinput;
-    char* args[3];
-    char newline;
+int main(void)
+{
+    char buffer[BUFLEN];
+    char parsedinput[BUFLEN];
+    char *args[MAX_ARGS];
 
-    printf("Welcome to the GroupXX shell! Enter commands, enter 'quit' to exit\n");
-    do {
-        //Print the terminal prompt and get input
+    printf("Welcome to the Group01 shell! Enter commands, enter 'quit' to exit\n");
+
+    while (1) {
         printf("$ ");
-        char *input = fgets(buffer, sizeof(buffer), stdin);
-        if(!input)
-        {
-            fprintf(stderr, "Error reading input\n");
-            return -1;
-        }
-        
-        //Clean and parse the input string
-        parsedinput = (char*) malloc(BUFLEN * sizeof(char));
-        size_t parselength = trimstring(parsedinput, input, BUFLEN);
+        fflush(stdout);
 
-        //Sample shell logic implementation
-        if ( strcmp(parsedinput, "quit") == 0 ) {
+        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+            if (feof(stdin)) {
+                printf("\nBye!!\n");
+                return 0;
+            }
+
+            perror("fgets");
+            return 1;
+        }
+
+        trimstring(parsedinput, buffer, BUFLEN);
+
+        // Ignore a blank command line.
+        if (parsedinput[0] == '\0') {
+            continue;
+        }
+
+        int argc = parseargs(parsedinput, args, MAX_ARGS);
+        if (argc == -1) {
+            fprintf(stderr, "Error: too many command-line arguments\n");
+            continue;
+        }
+        if (argc == -2) {
+            fprintf(stderr, "Error: unmatched quotation mark\n");
+            continue;
+        }
+        if (argc == 0) {
+            continue;
+        }
+
+        // "quit" is handled by the shell rather than passed to execve().
+        if (strcmp(args[0], "quit") == 0) {
             printf("Bye!!\n");
             return 0;
         }
-        else {
-	  // Here goes the magic!
+
+        pid_t child = fork();
+        if (child < 0) {
+            perror("fork");
+            continue;
         }
 
-        //Remember to free any memory you allocate!
-        free(parsedinput);
-    } while ( 1 );
+        if (child == 0) {
+            // args[0] MUST be the executable's full path.
+            execve(args[0], args, environ);
 
-    return 0;
+            // execve() only returns if execution failed.
+            perror("execve");
+            _exit(127);
+        }
+
+        int status;
+        if (waitpid(child, &status, 0) < 0) {
+            perror("waitpid");
+        }
+    }
 }
