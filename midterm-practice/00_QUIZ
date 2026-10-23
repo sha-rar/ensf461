@@ -1,0 +1,581 @@
+# ENSF 461 — Comprehensive Midterm Practice Quiz
+
+## Section 1 — Shell and Bash (Q1–Q8)
+
+Q1. Working directory and command execution
+
+You are currently in `/home/student/projects`.
+
+1. Write the command to print your current working directory.
+2. Write the command to navigate to `/home/student/downloads`.
+3. Write the command to execute a programme called `test` located in your current directory.
+4. Explain why typing `test` and `./test` can execute different programmes.
+
+Q2. Environment variables and PATH
+
+1. What is an environment variable?
+2. Explain the purpose of the `PATH` environment variable.
+3. What happens when you enter `ls` into Bash?
+4. Write a command that creates a shell variable called `COURSE` containing `ENSF461`.
+5. How would you make that variable available to child processes?
+
+Q3. Standard streams and redirection
+
+1. Distinguish between `stdin`, `stdout` and `stderr`, including their file descriptor numbers.
+2. Explain what each command does:
+   ```
+   ./program > output.txt
+   ./program 2> errors.txt
+   ./program > output.txt 2>&1
+   ./program < input.txt
+   ```
+3. Why is the following command problematic?
+   ```
+   ./program > log.txt 2> log.txt
+   ```
+4. Rewrite it so that both standard output and standard error go into the same file.
+
+Q4. Pipes
+
+Consider:
+
+```
+ls -1 /dev | grep tty | wc -l
+```
+
+1. Explain what each command does.
+2. Explain what the two pipe operators do.
+3. What does the final number represent?
+4. Write a pipeline that counts the number of lines containing `error` in a file called `server.log`.
+
+Q5. Regular expression construction
+
+Write one regular expression for each requirement, using extended regular expression syntax. Each expression must match the entire string.
+
+1. Begins with one or more digits and ends with exactly three uppercase letters.
+2. Begins with `M`, followed by between two and four digits, and ends with `Z`.
+3. Contains the sequence `ab` repeated between two and four times, with nothing before or after it.
+4. Begins with exactly two uppercase letters, followed by zero or more digits, and ends with `xyz`.
+
+Q6. Regular expression evaluation
+
+Consider:
+
+```
+^[A-Z]{2}[0-9]{2,4}$
+```
+
+For each string, indicate whether it matches and explain why.
+
+| String    | Matches? |
+| --------- | -------- |
+| `AB12`    | ?        |
+| `A123`    | ?        |
+| `XY12345` | ?        |
+| `ZZ999`   | ?        |
+| `AB12CD`  | ?        |
+
+Also explain the meanings of `^`, `$`, `+`, `*` and `{2,4}`.
+
+Q7. Manual pages
+
+1. What is the purpose of the `man` command?
+2. How would you open the manual page for `grep`?
+3. What is the difference between `man 2 fork` and `man 3 malloc`?
+4. Where would you look to determine the arguments accepted by a particular Linux command?
+
+Q8. Bash scripting
+
+Write a complete Bash script that:
+
+1. Initialises a variable `NUM` to 1.
+2. Uses a `while` loop to iterate through the numbers 1–10.
+3. Uses `expr` and the modulo operator to determine whether each number is even or odd.
+4. Prints either `N is even` or `N is odd`.
+5. Increments the variable after every iteration.
+
+Do not use a `for` loop.
+
+## Section 2 — C and Compiling (Q9–Q11)
+
+Q9. Compiled versus interpreted languages
+
+1. Explain the difference between a compiled language and an interpreted language.
+2. Why is C generally considered compiled, whereas Bash is generally considered interpreted?
+3. What role does the compiler play in converting C source code into an executable programme?
+
+Q10. GCC
+
+Consider the command:
+
+```
+gcc -Wall -g -o program main.c
+```
+
+1. Explain the purpose of each option.
+2. What would happen if `-o program` were omitted?
+3. What does the `-c` option do?
+4. Write a GCC command that compiles `main.c` and `helper.c` into a single executable called `application`, enabling common compiler warnings.
+
+Q11. Stack versus heap variables
+
+Consider:
+
+```
+#include <stdlib.h>
+
+void example(void) {
+    int a = 10;
+    int *b = malloc(sizeof(int));
+    *b = 20;
+}
+```
+
+1. Where is `a` stored?
+2. Where is the pointer variable `b` stored?
+3. Where is the integer containing `20` stored?
+4. What happens to `a` when the function returns?
+5. What happens to the dynamically allocated integer when the function returns?
+6. Identify the memory-management problem in this code and correct it.
+
+## Section 3 — Operating Systems Overview (Q12–Q16)
+
+Q12. Operating system structure
+
+1. Identify three major responsibilities of an operating system.
+2. Explain how an OS sits between user programmes and computer hardware.
+3. What is a device driver?
+4. Why are device drivers necessary for interacting with hardware?
+
+Q13. Resource virtualisation
+
+Explain how an operating system virtualises each of the following:
+
+1. CPU
+2. Memory
+3. Persistent storage
+
+For each, explain what illusion or abstraction is presented to a running programme.
+
+Q14. User mode, kernel mode and traps
+
+A user programme calls a system function that requires kernel privileges.
+
+1. Why can the programme not perform the privileged operation directly?
+2. What is a trap?
+3. Describe the sequence of events from the system call until execution returns to the user programme.
+4. Explain the purpose of saving and restoring CPU registers.
+5. Does a trap allow arbitrary application code to execute with kernel privileges? Explain.
+
+Q15. Limited direct execution
+
+1. What is limited direct execution?
+2. Why does the OS allow user programmes to execute instructions directly on the CPU?
+3. How does the OS maintain control over those programmes?
+4. Distinguish a system call from an ordinary function call.
+
+Q16. Virtual memory versus shared disk
+
+1. Why does virtual memory generally provide separate address spaces to processes?
+2. Why is persistent disk storage commonly shared between processes?
+3. What problems could arise if processes were allowed unrestricted access to one another's memory?
+
+## Section 4 — Process Execution (Q17–Q23)
+
+Q17. Process states
+
+Consider the following states:
+
+- Ready
+- Running
+- Blocked
+- Terminated
+
+Explain which state transition occurs in each situation.
+
+1. A process is selected by the scheduler.
+2. A process requests disk I/O and must wait for completion.
+3. A timer interrupt causes a running process to be preempted.
+4. A requested I/O operation completes.
+5. A process executes its final instruction and exits.
+
+Q18. Programmes and processes
+
+1. Distinguish a programme from a process.
+2. What information constitutes the state of a process?
+3. What is a PID?
+4. What is the purpose of the programme counter?
+5. Under the x86-64 calling convention, how are function arguments commonly passed?
+6. Explain why two running instances of the same executable are separate processes.
+
+Q19. Understanding `fork()`
+
+Consider:
+
+```
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main(void) {
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        printf("Child\n");
+    } else {
+        wait(NULL);
+        printf("Parent\n");
+    }
+
+    return 0;
+}
+```
+
+1. How many processes exist after `fork()` returns successfully?
+2. What value does `fork()` return to the child?
+3. What value does it return to the parent?
+4. Write the complete programme output, in order.
+5. What would change if `wait(NULL)` were removed?
+
+Q20. Process tree tracing
+
+Consider:
+
+```
+#include <stdio.h>
+#include <unistd.h>
+
+int main(void) {
+    fork();
+    fork();
+
+    printf("Hello\n");
+
+    return 0;
+}
+```
+
+1. How many processes exist immediately after both `fork()` statements have finished executing?
+2. How many times is `Hello` printed?
+3. Draw the complete parent–child process tree.
+4. Explain why the second `fork()` does not execute just once.
+
+Assume both calls succeed.
+
+Q21. Understanding `exec()`
+
+1. What does the `exec()` family of functions do?
+2. Does a successful `exec()` create a new process?
+3. Does a successful `exec()` normally change the process's PID?
+4. What happens to the existing programme's instructions and address space?
+5. If `exec()` succeeds, does execution return to the instruction immediately following the call?
+
+Q22. Understanding `wait()`
+
+Consider:
+
+```
+pid_t pid = fork();
+
+if (pid == 0) {
+    sleep(2);
+    printf("C\n");
+} else {
+    printf("P1\n");
+    wait(NULL);
+    printf("P2\n");
+}
+```
+
+1. Determine the guaranteed ordering relationships among the three printed lines.
+2. Explain precisely what `wait(NULL)` does.
+3. Can `P2` appear before `C`? Why?
+4. What is the relationship between waiting and process termination?
+
+Assume `fork()` succeeds and output is written to a terminal.
+
+Q23. Process trees and pipelines
+
+A user enters the following command in Bash:
+
+```
+ls -1 | grep '[.]c$'
+```
+
+1. Explain how Bash can use `fork()` and `exec()` to execute the two commands.
+2. Draw the parent–child relationships between Bash and the two command processes.
+3. Explain how the pipe connects the processes.
+4. Do the two commands necessarily execute sequentially?
+5. Identify the role of the OS in creating the processes and managing their execution.
+
+## Section 5 — CPU Scheduling (Q24–Q32)
+
+Q24. Scheduling terminology
+
+1. Define turnaround time.
+2. Define response time.
+3. Define waiting time.
+4. What is a context switch?
+5. Distinguish a scheduling mechanism from a scheduling policy.
+6. Why might a policy that minimises average turnaround time perform poorly for interactive processes?
+
+Q25. First-In, First-Out (FIFO)
+
+Consider the following jobs:
+
+| Job | Arrival time | CPU length |
+| --- | ------------ | ---------- |
+| A   | 0            | 6          |
+| B   | 2            | 3          |
+| C   | 4            | 2          |
+| D   | 9            | 4          |
+
+Using non-preemptive FIFO scheduling:
+
+1. Write the complete scheduling trace, showing the start time, finish time and executing job for each interval.
+2. Calculate the turnaround time of every job.
+3. Calculate the response time of every job.
+4. Calculate average turnaround time.
+5. Calculate average response time.
+
+Q26. Shortest Job First (SJF)
+
+Use the same jobs as Q25.
+
+| Job | Arrival time | CPU length |
+| --- | ------------ | ---------- |
+| A   | 0            | 6          |
+| B   | 2            | 3          |
+| C   | 4            | 2          |
+| D   | 9            | 4          |
+
+Using non-preemptive SJF:
+
+1. Write the complete scheduling trace.
+2. Calculate average turnaround time.
+3. Calculate average response time.
+4. Compare your results with FIFO.
+5. Explain why SJF cannot necessarily select the globally shortest job at time 0.
+
+Q27. Shortest Time-to-Completion First (STCF)
+
+Consider:
+
+| Job | Arrival time | CPU length |
+| --- | ------------ | ---------- |
+| A   | 0            | 9          |
+| B   | 2            | 3          |
+| C   | 3            | 1          |
+| D   | 11           | 2          |
+
+Using preemptive STCF:
+
+1. Write the complete scheduling trace.
+2. Identify every time a running job is preempted.
+3. Calculate the turnaround time and response time for all jobs.
+4. Calculate the average turnaround and response times.
+5. At time 11, should the running job be preempted? Explain.
+
+For equal remaining times, retain the currently running job.
+
+Q28. Round Robin (RR)
+
+Consider a Round Robin scheduler with a quantum of 3 time units.
+
+| Job | Arrival time | CPU length |
+| --- | ------------ | ---------- |
+| A   | 0            | 7          |
+| B   | 1            | 4          |
+| C   | 4            | 2          |
+| D   | 10           | 3          |
+
+1. Write a scheduling trace showing every execution interval.
+2. After each quantum expires, state the contents of the ready queue.
+3. Calculate the completion time of each job.
+4. Calculate the average turnaround time.
+5. Calculate the average response time.
+6. Explain what happens if a process finishes before exhausting its quantum.
+
+New arrivals join the back of the ready queue; a process whose quantum expires is requeued at the back if it still has work remaining. There is no context-switch overhead.
+
+Q29. Preemption and scheduling policies
+
+1. Distinguish preemptive and non-preemptive scheduling.
+2. Which of FIFO, SJF, STCF and RR are preemptive?
+3. What is cooperative scheduling?
+4. How does a hardware timer interrupt enable non-cooperative scheduling?
+5. Explain the convoy effect.
+6. Why might estimating a job's total CPU length be difficult?
+
+Q30. Multi-Level Feedback Queue (MLFQ)
+
+Consider an MLFQ scheduler with two queues:
+
+- Q0: high priority, quantum of 2.
+- Q1: low priority, quantum of 4.
+
+New jobs enter Q0. Jobs that consume their entire Q0 quantum are demoted to Q1. Jobs that block for I/O before using their full Q0 quantum remain at Q0. Q0 always takes priority over Q1.
+
+1. Which queue receives a newly created process?
+2. What happens to a CPU-bound process that repeatedly uses its entire quantum?
+3. Why might an interactive process retain a higher priority?
+4. If a Q1 process is running when a new Q0 process arrives, what happens?
+5. How might a low-priority process experience starvation?
+6. Explain how periodic priority boosts could address starvation.
+
+Q31. Lottery and stride scheduling
+
+Three jobs have the following ticket allocations:
+
+| Job | Tickets |
+| --- | ------- |
+| A   | 50      |
+| B   | 30      |
+| C   | 20      |
+
+Part A — Lottery scheduling:
+
+1. What is the probability that each job wins the next lottery?
+2. Approximately what fraction of CPU time should each receive over many scheduling decisions?
+3. Does lottery scheduling guarantee exact CPU proportions over a small number of decisions?
+
+Part B — Stride scheduling:
+
+Assume the stride constant is 600 and all initial pass values are zero.
+
+4. Calculate each job's stride.
+5. Write the order of the first six scheduling selections.
+6. Show how each selected job's pass value changes.
+7. Explain the main difference between lottery and stride scheduling.
+
+When pass values tie, select the job that comes first alphabetically.
+
+Q32. Scheduling and I/O
+
+1. Why is CPU scheduling more complicated than simply dividing CPU time among processes?
+2. What happens to a process when it must wait for disk I/O?
+3. What can the scheduler do while the process is blocked?
+4. Explain why CPU-intensive and I/O-intensive jobs may benefit from different scheduling treatment.
+5. Compare FIFO, SJF, STCF and RR in terms of turnaround time, response time and their assumptions.
+
+## Section 6 — Memory Management (Q33–Q38)
+
+Q33. Virtual address space
+
+1. What is a virtual address space?
+2. Why does each process normally have its own virtual address space?
+3. Distinguish virtual addresses from physical addresses.
+4. Identify the roles of the code, data, heap and stack regions.
+5. Explain how virtual memory contributes to process isolation.
+
+Q34. Stack frames
+
+Consider:
+
+```
+int add(int a, int b) {
+    int result = a + b;
+    return result;
+}
+
+int main(void) {
+    int x = add(5, 7);
+    return 0;
+}
+```
+
+1. What is a stack frame?
+2. What information may be stored in a function's stack frame?
+3. What is the purpose of the return address?
+4. Explain the roles of the stack pointer (`rsp`) and frame pointer (`rbp`) on x86-64.
+5. In which direction does the stack normally grow in memory?
+6. What happens to the stack frame when `add()` returns?
+7. What is the purpose of a stack canary?
+
+Q35. Stack allocation
+
+1. Why is the stack described as a bump allocator?
+2. Why are stack allocations and deallocations typically very fast?
+3. Explain why stack-allocated objects must normally be deallocated in reverse allocation order.
+4. Why can the stack not generally support arbitrary `free()` operations in the same way as the heap?
+5. Compare how stack and heap memory are managed.
+
+Q36. Dynamic memory allocation
+
+Write a complete C programme that:
+
+1. Dynamically allocates an array of five integers using `malloc()`.
+2. Checks whether the allocation succeeded.
+3. Initialises the array with the values 1, 2, 3, 4 and 5.
+4. Calculates and prints the sum of the array elements.
+5. Releases all dynamically allocated memory before returning.
+
+Then explain the purpose of `sizeof(int)` in the allocation.
+
+Q37. Memory-management errors
+
+For each code fragment, identify the error, explain why it is problematic, and describe how to fix it.
+
+Fragment A
+
+```
+int *p = malloc(sizeof(int));
+*p = 10;
+
+free(p);
+printf("%d\n", *p);
+```
+
+Fragment B
+
+```
+int *p = malloc(sizeof(int));
+
+free(p);
+free(p);
+```
+
+Fragment C
+
+```
+void function(void) {
+    int *p = malloc(100);
+    p = NULL;
+}
+```
+
+Fragment D
+
+```
+void function(void) {
+    int x = 5;
+    free(&x);
+}
+```
+
+Q38. Integrating stack and heap concepts
+
+Consider:
+
+```
+#include <stdlib.h>
+
+int *create_number(void) {
+    int number = 42;
+    return &number;
+}
+
+int main(void) {
+    int *p = create_number();
+    return 0;
+}
+```
+
+1. Where is `number` allocated?
+2. What happens to `number` when `create_number()` returns?
+3. Why is the returned pointer problematic?
+4. Rewrite `create_number()` so the integer remains valid after the function returns, using dynamic allocation.
+5. Show the necessary change to `main()` to release the dynamically allocated memory.
+6. Explain how `malloc()` and `free()` relate to the underlying operating system's memory-management facilities.
+
+Coverage: Shell (8 questions) · C and compiling (3) · OS overview (5) · Processes (7) · Scheduling (9) · Memory (6)
