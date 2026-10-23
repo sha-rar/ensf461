@@ -1,4 +1,4 @@
-# ENSF 461 — Comprehensive Midterm Practice Quiz
+# ENSF 461 — Midterm Practice Quiz
 
 ## Section 1 — Shell and Bash (Q1–Q8)
 
